@@ -2,10 +2,6 @@
 
 An interactive AI-powered debate platform where two AI agents engage in structured debates on user-provided topics. The system generates arguments, counterarguments, and rebuttals while presenting the debate in a user-friendly web interface. Users can observe how different AI perspectives reason, challenge each other, and arrive at conclusions.
 
-> [!WARNING]
-> **Educational Disclaimer:** This application is designed for educational, research, and demonstration purposes. AI-generated arguments may contain inaccuracies, biases, or outdated information. Users should independently verify critical information before relying on it.
-
----
 
 ## 🚀 Features
 

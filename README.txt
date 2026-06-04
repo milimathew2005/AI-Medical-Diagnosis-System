@@ -1,117 +1,234 @@
-# AI Medical Diagnosis System
+# AI Debate Arena
 
-An interactive, AI-powered medical diagnosis web application and machine learning pipeline. This system predicts potential diseases based on user-inputted symptoms. It includes a user-friendly Flask-based web interface, an interactive NLP chatbot, data preprocessing tools, and machine learning model training scripts.
+An interactive AI-powered debate platform where two AI agents engage in structured debates on user-provided topics. The system generates arguments, counterarguments, and rebuttals while presenting the debate in a user-friendly web interface. Users can observe how different AI perspectives reason, challenge each other, and arrive at conclusions.
 
 > [!WARNING]
-> **Medical Disclaimer:** This application is for educational/demo purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a healthcare professional for medical concerns.
+> **Educational Disclaimer:** This application is designed for educational, research, and demonstration purposes. AI-generated arguments may contain inaccuracies, biases, or outdated information. Users should independently verify critical information before relying on it.
 
 ---
 
 ## 🚀 Features
 
-- **Flask Web Dashboard:** A visual interface where users can select symptoms and receive probabilistic disease predictions.
-- **AI Chatbot (NLP-driven):** An interactive chatbot built into the interface using spaCy. It parses natural text, extracts symptoms, handles greeting intents, and answers queries about precautions and disease descriptions contextually.
-- **Weighted ML Predictions:** Uses weights from a symptom-severity mapping database to train a Naive Bayes model (in the web application) and a Random Forest Classifier (in the offline training pipeline).
-- **Interactive CLI Predictor:** A simple command-line script to test predictions interactively in the terminal.
+* **AI vs AI Debates:** Two AI agents debate opposing viewpoints on a given topic.
+* **Automated Argument Generation:** AI agents generate opening statements, rebuttals, and closing remarks.
+* **Structured Debate Flow:** Multiple rounds of argument exchange for deeper discussion.
+* **Real-Time Debate Visualization:** Clean web interface for viewing debate progression.
+* **Firebase Integration:** Stores debate history and user interactions.
+* **Cloud-Powered AI Processing:** Uses Google Cloud AI services for generating debate responses.
+* **Topic Flexibility:** Supports debates on technology, science, ethics, education, business, and more.
 
 ---
 
 ## 📁 Project Structure
 
 ```text
-├── app.py                      # Main Flask application and Chatbot backend
-├── preprocess_dataset.py       # Script to convert raw symptoms to binary feature format
-├── train_model.py              # Script to train and save the Random Forest model
-├── predict.py                  # Interactive CLI script for terminal predictions
-├── templates/
-│   ├── home.html               # Web landing page
-│   └── index.html              # Main diagnosis and chatbot interface page
-├── static/
-│   └── bg.jpg                  # Background image asset
-├── dataset.csv                 # Raw symptom-disease dataset
-├── processed_dataset.csv       # Preprocessed binary symptom dataset (generated)
-├── symptom-severity.csv        # Dataset containing weights for each symptom
-├── symptom_description.csv     # Disease descriptions database
-├── symptom_precaution.csv      # Precautions to take for each disease
-├── model.pkl                   # Saved classifier model (generated)
-└── symptoms.pkl                # Saved list of symptoms (generated)
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/        # Reusable UI components
+│   │   ├── pages/             # Application pages
+│   │   ├── services/          # API communication services
+│   │   └── App.js             # Main application component
+│   └── package.json
+│
+├── backend/
+│   ├── debate_engine.py       # AI debate orchestration logic
+│   ├── prompts.py             # AI prompt templates
+│   ├── firebase_service.py    # Firebase integration
+│   ├── config.py              # Configuration settings
+│   └── app.py                 # Backend API server
+│
+├── firebase/
+│   └── firestore.rules        # Firestore security rules
+│
+├── docs/
+│   └── architecture.md        # System design documentation
+│
+├── requirements.txt
+├── README.md
+└── .env
 ```
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠️ Technologies Used
 
-### 1. Prerequisites
-Ensure you have **Python 3.8+** installed.
+### Frontend
 
-### 2. Set Up a Virtual Environment (Recommended)
-Navigate to the project root directory and create a virtual environment:
+* React.js
+* HTML5
+* CSS3
+* JavaScript
+
+### Backend
+
+* Python
+* Flask
+
+### AI & Cloud Services
+
+* Google Gemini API
+* Google Cloud Platform (GCP)
+
+### Database
+
+* Firebase Firestore
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
 
 ```bash
-# Create virtual environment
+git clone <repository-url>
+cd ai-debate-arena
+```
+
+### 2. Create a Virtual Environment
+
+```bash
 python -m venv venv
+```
 
-# Activate on Windows (Command Prompt)
+Activate the environment:
+
+**Windows**
+
+```bash
 venv\Scripts\activate
+```
 
-# Activate on Windows (PowerShell)
-.\venv\Scripts\Activate.ps1
+**macOS/Linux**
 
-# Activate on macOS/Linux
+```bash
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
-Install the required packages:
+### 3. Install Backend Dependencies
 
 ```bash
-pip install Flask pandas numpy scikit-learn spacy
+pip install -r requirements.txt
 ```
 
-### 4. Download spaCy Language Model
-The chatbot requires spaCy's English language model for tokenization and entity matching:
+### 4. Install Frontend Dependencies
 
 ```bash
-python -m spacy download en_core_web_sm
+cd frontend
+npm install
 ```
 
----
+### 5. Configure Environment Variables
 
-## ⚙️ How to Run
+Create a `.env` file in the project root:
 
-### Step 1: Preprocess the Dataset
-Prepare the symptom list and convert the raw `dataset.csv` into a binary format `processed_dataset.csv`:
-```bash
-python preprocess_dataset.py
+```env
+GEMINI_API_KEY=your_api_key
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_PRIVATE_KEY=your_private_key
+FIREBASE_CLIENT_EMAIL=your_client_email
 ```
-*This will also output `symptoms.pkl` containing the sorted list of symptoms.*
 
-### Step 2: Train the Machine Learning Model
-Train the Random Forest Classifier on the preprocessed dataset and export the model file:
-```bash
-python train_model.py
-```
-*This evaluates model accuracy and outputs `model.pkl` and updates `symptoms.pkl`.*
+### 6. Start the Backend Server
 
-### Step 3: Launch the Flask Web App
-Start the local server:
 ```bash
 python app.py
 ```
-*Access the application by opening [http://127.0.0.1:5000](http://127.0.0.1:5000) in your web browser.*
 
-### Optional: Test via Command Line Interface (CLI)
-You can test the trained model interactively in the terminal by running:
+### 7. Start the Frontend
+
 ```bash
-python predict.py
+cd frontend
+npm start
+```
+
+The application will be available at:
+
+```text
+http://localhost:3000
 ```
 
 ---
 
-## 🧠 Behind the Scenes
+## 🎯 How It Works
 
-1. **Preprocessing (`preprocess_dataset.py`):** Converts list-based symptoms in the raw `dataset.csv` into a structured, wide-form binary representation (one column per symptom, 0 if absent, 1 if present).
-2. **Model Training (`train_model.py`):** Imports the binary dataset, applies scaling weights based on the gravity of each symptom from `symptom-severity.csv`, and trains a Random Forest Classifier.
-3. **Web Server Backend (`app.py`):**
-   - Employs a **Multinomial Naive Bayes Model** trained dynamically at startup.
-   - The `/chat` endpoint uses NLP techniques via `spaCy` to map human conversational statements into formal symptom tokens. It stores conversation context, allowing the user to ask follow-up questions like *"What precautions should I take?"* or *"What is this?"* based on the latest diagnosed condition.
+### Step 1: Topic Submission
+
+The user enters a debate topic through the web interface.
+
+### Step 2: Position Assignment
+
+The system assigns two AI agents opposing viewpoints:
+
+* AI Agent A → Supports the topic
+* AI Agent B → Opposes the topic
+
+### Step 3: Debate Execution
+
+The debate engine manages multiple rounds:
+
+1. Opening Statements
+2. Rebuttal Round
+3. Counterarguments
+4. Closing Statements
+
+### Step 4: Result Presentation
+
+The complete debate is displayed in an organized format, allowing users to analyze both perspectives.
+
+---
+
+## 🧠 System Architecture
+
+### Frontend Layer
+
+Handles user interaction, debate visualization, and API communication.
+
+### Backend Layer
+
+Coordinates debate flow, manages prompts, and communicates with AI services.
+
+### AI Layer
+
+Uses Google Gemini models to generate context-aware arguments and rebuttals.
+
+### Database Layer
+
+Stores debate history, topics, timestamps, and generated responses using Firebase Firestore.
+
+---
+
+## 🔥 Future Enhancements
+
+* Debate winner prediction using AI evaluation.
+* User voting system.
+* Multi-agent debates involving more than two AI participants.
+* Voice-enabled debates using speech synthesis.
+* Real-time collaborative debate rooms.
+* Analytics dashboard for debate quality assessment.
+* Export debates as PDF or text reports.
+
+---
+
+## 📊 Educational Applications
+
+This project can be used for:
+
+* Critical thinking development
+* Argument analysis
+* AI reasoning research
+* Classroom discussions
+* Public speaking preparation
+* Decision-making support
+
+---
+
+## 👨‍💻 Authors
+
+Developed as a B.Tech Artificial Intelligence Engineering project demonstrating the integration of Generative AI, Cloud Computing, and Modern Web Technologies.
+
+---
+
+## 📄 License
+
+This project is intended for educational and academic purposes.

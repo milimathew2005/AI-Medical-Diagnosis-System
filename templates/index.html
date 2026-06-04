@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Medical Diagnosis System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        body.fade-in {
+            opacity: 1;
+        }
+        body {
+            font-family: 'Alata', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+        }
+        .symptom-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        #symptom-search {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        .symptoms-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .symptom-card {
+            display: flex;
+            align-items: center;
+            background-color: #1e1e1e;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .symptom-card input {
+            margin-right: 8px;
+        }
+        .diagnose-btn {
+            padding: 12px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .diagnose-btn:hover {
+            background-color: #45a049;
+        }
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .result-card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #4caf50;
+        }
+        .result-card.medium {
+            border-left-color: #ff9800;
+        }
+        .result-card.low {
+            border-left-color: #f44336;
+        }
+        .confidence-bar {
+            width: 100%;
+            height: 15px;
+            background-color: #2c2c2c;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+        }
+        .bar-fill.high {
+            width: 100%;
+            background-color: #4caf50;
+        }
+        .bar-fill.medium {
+            width: 60%;
+            background-color: #ff9800;
+        }
+        .bar-fill.low {
+            width: 30%;
+            background-color: #f44336;
+        }
+        p {
+            margin: 5px 0;
+        }
+
+        #chatbot-cloud {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            width: 320px;
+            height: 420px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #333;
+            z-index: 1001;
+        }
+        #chatbot-header {
+            background-color: #4caf50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        #chatbot-header span {
+            margin-right: 8px;
+        }
+        #chat-area {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .bot-msg, .user-msg {
+            padding: 8px 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .bot-msg { background-color: #2e2e2e; align-self: flex-start; color: #d4d4d4; }
+        .user-msg { background-color: #4caf50; align-self: flex-end; color: white; }
+        #chat-input {
+            display: flex;
+            border-top: 1px solid #333;
+        }
+        #chat-input input {
+            flex: 1;
+            border: none;
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 10px;
+            outline: none;
+        }
+        #chat-input button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        #chat-input button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Medical Diagnosis System</h1>
+            <p>Search your symptoms and get intelligent diagnosis</p>
+        </header>
+
+        <form method="POST" class="symptom-form">
+            <label for="symptom-search" class="search-label">Search Symptoms:</label>
+            <input type="text" id="symptom-search" placeholder="Type to search..." autocomplete="off">
+
+            <div class="symptoms-grid" id="symptom-list">
+                {% for s in symptoms %}
+                    <label class="symptom-card" data-symptom="{{ s }}">
+                        <input type="checkbox" name="symptoms" value="{{ s }}">
+                        <span>{{ s | replace("_", " ") | title }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="diagnose-btn">Diagnose</button>
+        </form>
+
+        {% if top_predictions %}
+            <div class="results-container">
+                {% for res in top_predictions %}
+                    {% set conf = res.confidence | default(0) | float %}
+                    {% if conf > 0 %}
+                        {% if conf >= 80 %}
+                            {% set conf_class = 'high' %}
+                        {% elif conf >= 50 %}
+                            {% set conf_class = 'medium' %}
+                        {% else %}
+                            {% set conf_class = 'low' %}
+                        {% endif %}
+
+                        <div class="result-card {{ conf_class }}">
+                            <h2>{{ loop.index }}. {{ res.disease }}</h2>
+
+                            <div class="confidence-bar">
+                                <div class="bar-fill {{ conf_class }}"></div>
+                            </div>
+                            <p><strong>Confidence:</strong> {{ conf | round(2) }}%</p>
+                            <p><strong>Description:</strong> {{ res.description }}</p>
+                            <p><strong>Precaution:</strong> {{ res.precaution }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="chatbot-cloud" title="Open Chatbot">☁</div>
+
+    <div id="chatbot" style="display:none;">
+        <div id="chatbot-header"><span id="chatbot-toggle-sign">−</span> Health Chatbot</div>
+        <div id="chat-area"></div>
+        <div id="chat-input">
+            <input type="text" id="user-input" placeholder="Ask about symptoms or diseases...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('symptom-search');
+        const symptomCards = document.querySelectorAll('.symptom-card');
+        searchInput.addEventListener('input', () => {
+            const filter = searchInput.value.toLowerCase();
+            symptomCards.forEach(card => {
+                const text = card.dataset.symptom.toLowerCase();
+                card.style.display = text.includes(filter) ? 'flex' : 'none';
+            });
+        });
+
+        const chatCloud = document.getElementById("chatbot-cloud");
+        const chatbot = document.getElementById("chatbot");
+        const chatArea = document.getElementById("chat-area");
+        const chatInput = document.getElementById("chat-input");
+        const input = document.getElementById("user-input");
+        const toggleSign = document.getElementById("chatbot-toggle-sign");
+        const chatbotHeader = document.getElementById("chatbot-header");
+
+        chatCloud.addEventListener("click", () => {
+            chatCloud.style.display = "none";
+            chatbot.style.display = "flex";
+        });
+
+        chatbotHeader.addEventListener("click", () => {
+            if(chatArea.style.display !== "none"){
+                chatArea.style.display = "none";
+                chatInput.style.display = "none";
+                chatbot.style.height = "40px";
+                toggleSign.textContent = "☁";
+            } else {
+                chatArea.style.display = "flex";
+                chatInput.style.display = "flex";
+                chatbot.style.height = "420px";
+                toggleSign.textContent = "−";
+            }
+        });
+
+        document.getElementById("send-btn").onclick = async () => {
+            const msg = input.value.trim();
+            if(!msg) return;
+            chatArea.innerHTML += `<div class="user-msg">${msg}</div>`;
+            input.value = "";
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({message: msg})
+            });
+            const data = await res.json();
+            chatArea.innerHTML += `<div class="bot-msg">${data.reply}</div>`;
+            chatArea.scrollTop = chatArea.scrollHeight;
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("fade-in");
+        });
+    </script>
+</body>
+</html>

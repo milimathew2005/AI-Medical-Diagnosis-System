@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Medical Diagnosis System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Alata', sans-serif;
+            background: url('{{ url_for("static", filename="bg.jpg") }}') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #e0e0e0;
+            overflow: hidden;
+            background-attachment: fixed;
+            transition: opacity 1.2s ease;
+            opacity: 0;
+        }
+
+        body.fade-in { opacity: 1; }
+
+        .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(18,18,18,0.65);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 700px;
+            padding: 50px 40px;
+            background: rgba(30,30,30,0.7);
+            border-radius: 16px;
+            box-shadow: 0 0 25px rgba(76, 175, 80, 0.25);
+            animation: floatUp 1.3s ease forwards;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            color: #4caf50;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1.15rem;
+            color: #b0b0b0;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background-color: #4caf50;
+            color: white;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .start-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.35);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+            width: 100%;
+            z-index: 2;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .content { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="content">
+        <h1>AI Medical Diagnosis System</h1>
+        <p>Welcome to your intelligent health companion. Enter your symptoms and get fast, accurate AI-powered diagnosis and guidance.</p>
+        <form action="{{ url_for('index') }}" method="get">
+            <button type="submit" class="start-btn">Start Diagnosis</button>
+        </form>
+    </div>
+    <footer>© 2025 AI Diagnosis</footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("fade-in");
+        });
+    </script>
+</body>
+</html>
